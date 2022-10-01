@@ -24,6 +24,9 @@ h1 {
 h2 {
   font-size: 3em;
 }
+h3 {
+  font-size: 2em;
+}
 
 .wrap {
   display: flex;
@@ -56,4 +59,15 @@ h2 {
 /* OPONENT */
 .wrap-oponent {
   width: 50%;
+}
+.wrap-oponents {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.oponent *{
+  width: 100px;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  user-select: none;
+  cursor: pointer;
 }
