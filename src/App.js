@@ -27,24 +27,48 @@ function App() {
         rating: 10,
         picture: Jimmy
     })
-    const [log, setLog] = useState({
 
-    })
-
+    const [log, setLog] = useState([["Let the games begin!"]])
+    
     useEffect(() => {
-        console.log('test')
+        console.log(...log)
     }, [log])
+
+    const showLog = () => {
+        const allLogs = log.map((entry) =>
+            <h4>{entry.map((entr) => <div>{entr}</div>)}</h4>
+        )
+        return allLogs
+    }
 
     const handleOption = (yourChoice) => {
         const enemyChoice = Math.floor(Math.random() * 3)
-        if (yourChoice == enemyChoice) console.log("Tie!")
-        if (yourChoice == 0 && enemyChoice == 1) setYourScore(prevYourScore => prevYourScore + 1)
-        if (yourChoice == 0 && enemyChoice == 2) setEmenyScore(prevEnemeyScore => prevEnemeyScore + 1)
-        if (yourChoice == 1 && enemyChoice == 0) setEmenyScore(prevEnemeyScore => prevEnemeyScore + 1)
-        if (yourChoice == 1 && enemyChoice == 2) setYourScore(prevYourScore => prevYourScore + 1)
-        if (yourChoice == 2 && enemyChoice == 0) setYourScore(prevYourScore => prevYourScore + 1)
-        if (yourChoice == 2 && enemyChoice == 1) setEmenyScore(prevEnemeyScore => prevEnemeyScore + 1)
-        if (enemyChoice > 2) setEmenyScore(prevEnemeyScore => prevEnemeyScore + 1)
+        const options = ['Rock', 'Paper', 'Scissors']
+        let win, lose, message
+        if (yourChoice == 0 && enemyChoice == 1) lose = true
+        if (yourChoice == 0 && enemyChoice == 2) win = true
+        if (yourChoice == 1 && enemyChoice == 0) win = true
+        if (yourChoice == 1 && enemyChoice == 2) lose = true
+        if (yourChoice == 2 && enemyChoice == 0) lose = true
+        if (yourChoice == 2 && enemyChoice == 1) win = true
+        if (enemyChoice > 2) lose = true
+        if (win) {
+            setYourScore(prevYourScore => prevYourScore + 1)
+            message = "You win!"
+        }
+        if (lose) {
+            setEmenyScore(prevEnemeyScore => prevEnemeyScore + 1)
+            message = "You lose!"
+        }
+        if (!win && !lose) {
+            message = "It's a tie!"
+        }
+        const newLog = [
+            "You chose " + options[yourChoice],
+            selectedOponent.name + " chose " + options[enemyChoice],
+            message
+        ]
+        setLog([newLog, ...log])
     }
 
     return (
@@ -52,7 +76,7 @@ function App() {
             <h1>Welcome to Rock Paper Scissors</h1>
             <div className='wrap'>
                 <section className='wrap-log'>
-                    Log
+                    {showLog()}
                 </section>
                 <section className='wrap-option'>
                     <div className='wrap-options'>
