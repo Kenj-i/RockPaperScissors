@@ -31,14 +31,13 @@ function App() {
     const [log, setLog] = useState([["Let the games begin!"]])
     
     useEffect(() => {
-        console.log(...log)
-    }, [log])
+        setLog([["Your oponent is " + selectedOponent.name], ...log])
+    }, [selectedOponent.name])
 
     const showLog = () => {
-        const allLogs = log.map((entry) =>
+        return log.map((entry) =>
             <h4>{entry.map((entr) => <div>{entr}</div>)}</h4>
         )
-        return allLogs
     }
 
     const handleOption = (yourChoice) => {
@@ -73,9 +72,17 @@ function App() {
 
     return (
         <main>
-            <h1>Welcome to Rock Paper Scissors</h1>
+            <div className='title'>
+                <h1>Welcome to Rock Paper Scissors</h1>
+            </div>
             <div className='wrap'>
                 <section className='wrap-log'>
+                    <h2>Game History</h2>
+                    <button onClick={
+                        () => {
+                            setLog([["Let the games begin!"]])
+                        }
+                    }>Clear</button>
                     {showLog()}
                 </section>
                 <section className='wrap-option'>
@@ -109,9 +116,12 @@ function App() {
                     </div>
                 </section>
                 <section className='wrap-oponent'>
-                    <h3>You're playing against: {selectedOponent.name}</h3>
+                    <div>
+                        <img src={selectedOponent.picture} />
+                        <h2>{selectedOponent.name}</h2>
+                    </div>
+                    
                     <h4>{selectedOponent.name} has a rating of {selectedOponent.rating}</h4>
-                    <img src={selectedOponent.picture} />
                     <div className='wrap-oponents'>
                         <Oponent name="Jimmy" rating={10} picture={Jimmy} setSelected={setSelectedOponent} />
                         <Oponent name="Emir" rating={15} picture={Emir} setSelected={setSelectedOponent} />
