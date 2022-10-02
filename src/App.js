@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import Jimmy from './media/oponents/Jimmy.png'
 import Emir from './media/oponents/Emir.png';
+import Wally from './media/oponents/Wally.png';
+import Hikaru from './media/oponents/Hikaru.png';
 
 function Oponent(props) {
     return (
@@ -10,6 +12,7 @@ function Oponent(props) {
                 props.setSelected({
                     name: props.name,
                     rating: props.rating,
+                    displayRating: props.display ? props.display : null,
                     picture: props.picture
                 })
             }
@@ -25,6 +28,7 @@ function App() {
     const [selectedOponent, setSelectedOponent] = useState({
         name: "Jimmy",
         rating: 10,
+        displayRating: null,
         picture: Jimmy
     })
 
@@ -41,7 +45,8 @@ function App() {
     }
 
     const handleOption = (yourChoice) => {
-        const enemyChoice = Math.floor(Math.random() * 3)
+        let enemyChoice = Math.floor(Math.random() * ((selectedOponent.rating - 1) / 3))
+        console.log(enemyChoice)
         const options = ['Rock', 'Paper', 'Scissors']
         let win, lose, message
         if (yourChoice == 0 && enemyChoice == 1) lose = true
@@ -50,7 +55,12 @@ function App() {
         if (yourChoice == 1 && enemyChoice == 2) lose = true
         if (yourChoice == 2 && enemyChoice == 0) lose = true
         if (yourChoice == 2 && enemyChoice == 1) win = true
-        if (enemyChoice > 2) lose = true
+        if (enemyChoice > 2) {
+            lose = true
+            if (yourChoice == 0) enemyChoice = 1
+            if (yourChoice == 1) enemyChoice = 2
+            if (yourChoice == 2) enemyChoice = 0
+        }
         if (win) {
             setYourScore(prevYourScore => prevYourScore + 1)
             message = "You win!"
@@ -77,13 +87,17 @@ function App() {
             </div>
             <div className='wrap'>
                 <section className='wrap-log'>
-                    <h2>Game History</h2>
-                    <button onClick={
-                        () => {
-                            setLog([["Let the games begin!"]])
-                        }
-                    }>Clear</button>
-                    {showLog()}
+                    <div style={{display: 'flex', alignItems: 'center', gap: '20px'}}>
+                        <h2>Game History</h2>
+                        <button onClick={
+                            () => {
+                                setLog([["Let the games begin!"]])
+                            }
+                        }>Clear</button>
+                    </div>
+                    <div className='log'>
+                        {showLog()}
+                    </div>
                 </section>
                 <section className='wrap-option'>
                     <div className='wrap-options'>
@@ -116,15 +130,19 @@ function App() {
                     </div>
                 </section>
                 <section className='wrap-oponent'>
-                    <div>
+                    <div className='wrap-selected-oponent'>
                         <img src={selectedOponent.picture} />
-                        <h2>{selectedOponent.name}</h2>
+                        <div style={{display: "flex", alignItems: "center", gap: "20px"}}>
+                            <h2>{selectedOponent.name}</h2>
+                            {selectedOponent.displayRating && <h3>{selectedOponent.displayRating}⭐</h3>}
+                            {!selectedOponent.displayRating && <h3>{selectedOponent.rating}⭐</h3>}
+                        </div>
                     </div>
-                    
-                    <h4>{selectedOponent.name} has a rating of {selectedOponent.rating}</h4>
                     <div className='wrap-oponents'>
                         <Oponent name="Jimmy" rating={10} picture={Jimmy} setSelected={setSelectedOponent} />
-                        <Oponent name="Emir" rating={15} picture={Emir} setSelected={setSelectedOponent} />
+                        <Oponent name="Emir" rating={12} picture={Emir} setSelected={setSelectedOponent} />
+                        <Oponent name="Wally" rating={15} picture={Wally} setSelected={setSelectedOponent} />
+                        <Oponent name="Hikaru" rating={999999} display="∞" picture={Hikaru} setSelected={setSelectedOponent} />
                     </div>
                 </section>
             </div>
