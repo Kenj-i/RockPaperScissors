@@ -26,7 +26,7 @@ function Oponent(props) {
 function App() {
     const [yourScore, setYourScore] = useState(0)
     const [enemyScore, setEmenyScore] = useState(0)
-    const [selectedOponent, setSelectedOponent] = useState({
+    const [selected, setSelected] = useState({
         name: "Jimmy",
         rating: 3,
         displayRating: 10,
@@ -35,11 +35,22 @@ function App() {
 
     const [log, setLog] = useState([["Let the games begin!"]])
     const [to, setTo] = useState(5)
+    const [settings, setSettings] = useState(false)
+    const [style, setStyle] = useState(false)
     
     useEffect(() => {
-        setLog([["Your oponent is " + selectedOponent.name], ...log])
-    }, [selectedOponent.name])
-
+        setLog([["Your oponent is " + selected.name], ...log])
+    }, [selected.name])
+    useEffect(() => {
+        if (yourScore == to) {
+            alert('Congratulations, you win!')
+            restart()
+        }
+        if (enemyScore == to) {
+            alert('Oh no you lost')
+            restart()
+        }
+    }, [yourScore, enemyScore])
     const showLog = () => {
         return log.map((entry) =>
             <h4>{entry.map((entr) => <div>{entr}</div>)}</h4>
@@ -47,8 +58,8 @@ function App() {
     }
 
     const handleOption = (yourChoice) => {
-        let enemyChoice = Math.floor(Math.random() * selectedOponent.rating)
-        if (selectedOponent.rating < 3 && Math.random() < 0.5) enemyChoice = -1
+        let enemyChoice = Math.floor(Math.random() * selected.rating)
+        if (selected.rating < 3 && Math.random() < 0.5) enemyChoice = -1
         const options = ['Rock', 'Paper', 'Scissors']
         let win, lose, message
         if (yourChoice == 0 && enemyChoice == 1) lose = true
@@ -82,13 +93,18 @@ function App() {
         }
         const newLog = [
             "You chose " + options[yourChoice],
-            selectedOponent.name + " chose " + options[enemyChoice],
+            selected.name + " chose " + options[enemyChoice],
             message
         ]
         setLog([newLog, ...log])
     }
     const handleTo = (e) => {
         setTo(e.target.valueAsNumber)
+    }
+    const restart = () => {
+        setYourScore(0)
+        setEmenyScore(0)
+        setLog([['Let the games begin!']])
     }
 
     return (
@@ -112,30 +128,30 @@ function App() {
                 </section>
                 <section className='wrap-option'>
                     <div className='wrap-options'>
-                        <div onClick={
+                        <button onClick={
                             () => {
                                 handleOption(0)
                             }} className='option'>
                         <h1>🪨</h1>
-                        </div>
-                        <div onClick={
+                        </button>
+                        <button onClick={
                             () => {
                                 handleOption(1)
                             }
                         } className='option'>
                         <h1>📄</h1>
-                        </div>
-                        <div onClick={
+                        </button>
+                        <button onClick={
                             () => {
                                 handleOption(2)
                             }
                         } className='option'>
                         <h1>✂️</h1>
-                        </div>
+                        </button>
                     </div>
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <h3>First to {to}</h3>
-                        <button style={{marginLeft: 'auto'}} className='round-button'><i className='bi bi-arrow-counterclockwise' /></button>
+                        <h3>First to {to} wins</h3>
+                        <button onClick={restart} style={{marginLeft: 'auto'}} className='round-button' title='Restart Game'><i className='bi bi-arrow-counterclockwise' /></button>
                     </div>
                     <div className='wrap-scores'>
                         <h3>Your Score: {yourScore}</h3>
@@ -143,24 +159,33 @@ function App() {
                         <h3>Enemy Score: {enemyScore}</h3>
                         <progress value={enemyScore} max={to} />
                     </div>
-                    <button>Open Settings</button>
-                    <input min="1" onChange={handleTo} defaultValue={5} max="100" type="range" />
+                    <button onClick={
+                        () => {
+                            setSettings(prevSettings => !prevSettings)
+                        }
+                    } className={settings ? 'round-button open' : 'round-button closed'}><i className='bi bi-gear' /></button>
+                    <div className={settings ? 'settings-open' : 'settings-closed'}>
+                        <div className='wrap-setting'>
+                            <h4>Game ends on {to} points:</h4>
+                            <input min="1" onChange={handleTo} defaultValue={5} max="100" type="range" />
+                        </div>
+                    </div>
                 </section>
                 <section className='wrap-oponent'>
                     <div className='wrap-selected-oponent'>
-                        <img src={selectedOponent.picture} />
+                        <img src={selected.picture} />
                         <div style={{display: "flex", alignItems: "center", gap: "20px"}}>
-                            <h2>{selectedOponent.name}</h2>
-                            {selectedOponent.displayRating && <h3>{selectedOponent.displayRating}⭐</h3>}
-                            {!selectedOponent.displayRating && <h3>{selectedOponent.rating}⭐</h3>}
+                            <h2>{selected.name}</h2>
+                            {selected.displayRating && <h3>{selected.displayRating}⭐</h3>}
+                            {!selected.displayRating && <h3>{selected.rating}⭐</h3>}
                         </div>
                     </div>
                     <div className='wrap-oponents'>
-                        <Oponent name="Jimmy" rating={3} display={10} picture={Jimmy} setSelected={setSelectedOponent} />
-                        <Oponent name="Martin" rating={2} display={5} picture={Martin} setSelected={setSelectedOponent} />
-                        <Oponent name="Emir" rating={4} display={12} picture={Emir} setSelected={setSelectedOponent} />
-                        <Oponent name="Wally" rating={5} display={15} picture={Wally} setSelected={setSelectedOponent} />
-                        <Oponent name="Hikaru" rating={999999} display="∞" picture={Hikaru} setSelected={setSelectedOponent} />
+                        <Oponent name="Jimmy" rating={3} display={10} picture={Jimmy} setSelected={setSelected} />
+                        <Oponent name="Martin" rating={2} display={5} picture={Martin} setSelected={setSelected} />
+                        <Oponent name="Emir" rating={4} display={12} picture={Emir} setSelected={setSelected} />
+                        <Oponent name="Wally" rating={5} display={15} picture={Wally} setSelected={setSelected} />
+                        <Oponent name="Hikaru" rating={999999} display="∞" picture={Hikaru} setSelected={setSelected} />
                     </div>
                 </section>
             </div>
